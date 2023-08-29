@@ -1,0 +1,5288 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/customHistories": {
+      "post": {
+        "operationId": "CustomHistoriesController_createCustomHistory",
+        "summary": "Create custom history",
+        "description": "Admin only route to create custom history as Metadata.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Custom history metadata is validated against the JSON schemas."
+          },
+          "409": {
+            "description": "Custom history with given metadata already exists on chain"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customHistories/{id}/metadata": {
+      "put": {
+        "operationId": "CustomHistoriesController_updateCustomHistoryMetadata",
+        "summary": "Allow custom history metadata to be amended",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Update metadata of custom history with this id",
+            "example": "9",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Custom history metadata is validated against the JSON schemas."
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/customHistories/metadata/custom-history-of-auction-metadata.schema.json": {
+      "get": {
+        "operationId": "CustomHistoriesController_getCustomHistoryOfAuctionMetadataJSONSchema",
+        "summary": "Get the Custom History of Auction metadata JSON schema file",
+        "description": "Get JSON schema for the Custom History of Auction Metadata JSON.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/customHistory/historyTypes": {
+      "post": {
+        "operationId": "CustomHistoryController_addCustomHistoryType",
+        "summary": "Add custom history type",
+        "description": "Admin only route to add custom history type.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCustomHistoryTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr": {
+      "get": {
+        "operationId": "SRRController_getSRRs",
+        "summary": "Get a list of SRRs",
+        "description": "Get a list of SRRs filtering by query parameters.",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": false,
+            "in": "query",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "required": false,
+            "in": "query",
+            "description": "Query by collection contract address",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerEOA",
+            "required": false,
+            "in": "query",
+            "description": "Query by Owner EOA if Issuing LicensedUserWallet",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "issuerLUW",
+            "required": false,
+            "in": "query",
+            "description": "Query by Issuing LicensedUserWallet contract address",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "txReceiptId",
+            "required": false,
+            "in": "query",
+            "description": "The params are exclusive.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SRR"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "SRRController_createSRR",
+        "summary": "Issue a new SRR",
+        "description": "Issue a new SRR on Startrail. Sends a transaction to StartrailRegistry.createSRR.",
+        "parameters": [
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSRRDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/typedData": {
+      "post": {
+        "operationId": "SRRController_createSRRTypedData",
+        "summary": "Build typed data for an Issue SRR request",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{tokenId}": {
+      "put": {
+        "operationId": "SRRController_updateSRR",
+        "summary": "Update details of an SRR",
+        "description": "Update details of an SRR on Startrail. Sends a transaction to StartrailRegistry.updateSRR.",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSRRDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{tokenId}/typedData": {
+      "put": {
+        "operationId": "SRRController_updateSRRTypedData",
+        "summary": "Build typed data for an Update SRR request",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/{tokenFile}": {
+      "get": {
+        "operationId": "SRRController_getMetadataJSONByTokenID",
+        "summary": "Get token metadata JSON",
+        "description": "Get metadata JSON for a given token.<br/>This is the ERC721 tokenURI().",
+        "parameters": [
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "20469176713323657527.json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "SRRController_updateMetadata",
+        "summary": "Update token metadata JSON",
+        "description": "Update metadata JSON for a given token.<br/>This is the ERC721 tokenURI().",
+        "parameters": [
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "84374200.json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/metadata/{tokenFile}/typedData": {
+      "put": {
+        "operationId": "SRRController_updateMetadataTypedData",
+        "summary": "Build typed data for an Update Metadata request",
+        "parameters": [
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "84374200.json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/registry-record-metadata.schema.json": {
+      "get": {
+        "operationId": "SRRController_getMetadataJSONSchemaV1",
+        "summary": "Get the V1 SRR metadata JSON schema file",
+        "description": "Get the V1 JSON schema for the SRR Metadata JSON.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/registry-record-transfer-metadata.schema.json": {
+      "get": {
+        "operationId": "SRRController_getTransferMetadataJSONSchemaV1",
+        "summary": "Get the V1 SRR Transfer metadata JSON schema file",
+        "description": "Get the V1 JSON schema for the SRR Transfer Metadata JSON.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/{tokenId}/history": {
+      "get": {
+        "operationId": "SRRController_getMetadataHistory",
+        "summary": "Get the all metadata records that have been set on an SRR from issuance to now",
+        "description": "Get Metadata History for an SRR.",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/convert": {
+      "put": {
+        "operationId": "SRRController_convertMetadata",
+        "summary": "Metadata JSON is converted to the latest version according to the version schema",
+        "description": "Metadata JSON is converted to the latest version according to the version schema",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertBatchMetadataRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConvertMetadataResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{tokenId}/approveByCommitment": {
+      "put": {
+        "operationId": "SRRController_approveByCommitment",
+        "summary": "Approve an SRR transfer by secret commitment",
+        "description": "Approve transfer by secret string to be used in a commit/reveal scheme where a double hash of the secret is used on commit / approval and a single hash is used on reveal / transfer. ",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveSRRByCommitmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "SRRController_cancelApproved",
+        "summary": "Cancel a prior approveByCommitment",
+        "description": "Cancels an approval set by /approveByCommitment",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{tokenId}/approveByCommitment/typedData": {
+      "put": {
+        "operationId": "SRRController_approveByCommitmentTypedData",
+        "summary": "Build typed data for an approve by commitment request",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "SRRController_cancelApprovedTypedData",
+        "summary": "Build typed data for a cancel approval request",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{tokenId}/transferByReveal": {
+      "post": {
+        "operationId": "SRRController_transferByReveal",
+        "summary": "Transfer SRR by reveal.",
+        "description": "Transfer SRR to a new owner providing a reveal hash, the hash of matches the commitment given in the approval stage. ",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferSRRByRevealDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{tokenId}/transferFromWithProvenance": {
+      "post": {
+        "operationId": "SRRController_transferFromWithProvenance",
+        "summary": "Transfer SRR to new owner",
+        "description": "Transfer SRR to new owner calling the transferFromWithProvenance function directly as a meta-tx",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferFromWithProvenanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{tokenId}/transferFromWithProvenance/typedData": {
+      "post": {
+        "operationId": "SRRController_safeTransferFromTypedData",
+        "summary": "Build typed data for an safe transfer from request",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/bulk": {
+      "post": {
+        "operationId": "SRRController_createAndSendBatch",
+        "summary": "A Generalized Batch endpoint",
+        "description": "A Generalized Batch endpoint",
+        "parameters": [
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGeneralizedBatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBatchTransferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          },
+          "404": {
+            "description": "Given LUW does not exist."
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/bulk/typedData": {
+      "post": {
+        "operationId": "SRRController_createAndSendBatchTypedData",
+        "summary": "Build a typed data for a generalized bulk request",
+        "description": "Build a typed data for a generalized bulk request.<br/>Return a MerkleRoot of a tree of generalized bulk leaf hashes. This root is to be signed by the sender.<br/>",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/bulk/{batchId}": {
+      "get": {
+        "operationId": "SRRController_getBatch",
+        "summary": "Get details of a generalized bulk",
+        "description": "Get details of a generalized bulk given the batch id",
+        "parameters": [
+          {
+            "name": "batchId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/bulk/pause": {
+      "put": {
+        "operationId": "SRRController_pauseGeneralizedBulkQueue",
+        "summary": "Pause processing of generalized bulk queue",
+        "description": "Admin only route that can pause the generalized bulk queue.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/bulk/resume": {
+      "put": {
+        "operationId": "SRRController_resumeGeneralizedBulkQueue",
+        "summary": "Resume processing of generalized bulk queue",
+        "description": "Admin only route that can resume the generalized bulk queue after a pause.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/history/typedData": {
+      "post": {
+        "operationId": "SRRController_addHistoryTypedData",
+        "summary": "Build typed data for for associating custom histories",
+        "description": "Build typed data for for associating SRRs with existing custom histories",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/history": {
+      "post": {
+        "operationId": "SRRController_addHistory",
+        "summary": "Associate SRRs with existing custom histories",
+        "description": "Associate SRRs with existing custom histories",
+        "parameters": [
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{tokenId}/lockExternalTransfer": {
+      "put": {
+        "operationId": "SRRController_setLockExternalTransfer",
+        "summary": "Disable/Enable standard ERC721 transfer methods",
+        "description": "Disable/Enable standard ERC721 transfer methods",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetLockExternalTranferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{tokenId}/lockExternalTransfer/typedData": {
+      "put": {
+        "operationId": "SRRController_setLockExternalTransferTypedData",
+        "summary": "Build typed data for disable/enable standard ERC721 transfer methods",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/erc2981/checker": {
+      "post": {
+        "operationId": "SRRController_checkERC2981Royalty",
+        "summary": "Startrail Registry and Collection: ERC2981 eligibility checker",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckERC2981RoyaltyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckERC2981RoyaltyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}": {
+      "post": {
+        "operationId": "SRRController_createCollectionSRR",
+        "summary": "Create a new SRR to a collection",
+        "description": "Create a new SRR to a collection",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionSRRDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{contractAddress}/typedData": {
+      "post": {
+        "operationId": "SRRController_createCollectionSRRTypeData",
+        "summary": "Build typed data for collection create srr",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/{contractAddress}/{tokenFile}": {
+      "get": {
+        "operationId": "SRRController_getCollectionMetadataJSONByTokenID",
+        "summary": "Get token metadata JSON",
+        "description": "Get collection metadata JSON for a given token.<br/>This is the ERC721 tokenURI().",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "20469176713323657527.json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "SRRController_collectionSRRMetadataUpdate",
+        "summary": "Update token metadata JSON from a collection contract",
+        "description": "Update metadata JSON for a given token from a collection contract.<br/>This is the ERC721 tokenURI().",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "84374200.json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/{contractAddress}/{tokenId}/history": {
+      "get": {
+        "operationId": "SRRController_collectionGetMetadataHistory",
+        "summary": "Get the all metadata records that have been set on a Collection SRR",
+        "description": "Get Metadata History for a Collection SRR.",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}": {
+      "put": {
+        "operationId": "SRRController_collectionUpdateSRR",
+        "summary": "Update details of an SRR from a collection contract",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCollectionSRRDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/typedData": {
+      "put": {
+        "operationId": "SRRController_collectionUpdateSRRTypedData",
+        "summary": "Build typed data for an Update SRR request from a collection contract",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/metadata/{contractAddress}/{tokenFile}/typedData": {
+      "put": {
+        "operationId": "SRRController_collectionSRRMetadataUpdateTypedData",
+        "summary": "Build typed data for an Update Metadata request from a collection contract",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenFile",
+            "required": true,
+            "in": "path",
+            "description": "Name of file which should be in the form &lt;ERC721 token id&gt;.json",
+            "example": "84374200.json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/approveByCommitment": {
+      "put": {
+        "operationId": "SRRController_collectionApproveByCommitment",
+        "summary": "Collection: Approve an SRR transfer by secret commitment",
+        "description": "Collection: Approve transfer by secret string to be used in a commit/reveal scheme where a double hash of the secret is used on commit / approval and a single hash is used on reveal / transfer. ",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveSRRByCommitmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "SRRController_collectionCancelApproved",
+        "summary": "Collection: Cancel a prior approveByCommitment",
+        "description": "Collection: Cancels an approval set by /approveByCommitment",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/approveByCommitment/typedData": {
+      "put": {
+        "operationId": "SRRController_collectionApproveByCommitmentTypedData",
+        "summary": "Collection: Build typed data for an approve by commitment request",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "SRRController_collectionCancelApprovedTypedData",
+        "summary": "Collection: Build typed data for a cancel approval request",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/transferByReveal": {
+      "post": {
+        "operationId": "SRRController_collectionTransferByReveal",
+        "summary": "Collection: Transfer SRR by reveal.",
+        "description": "Collection: Transfer SRR to a new owner providing a reveal hash, the hash of matches the commitment given in the approval stage. ",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferSRRByRevealDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/transferFromWithProvenance": {
+      "post": {
+        "operationId": "SRRController_collectionTransferFromWithProvenance",
+        "summary": "Transfer SRR to new owner",
+        "description": "Transfer SRR on a Collection to new owner calling the ` + `transferFromWithProvenance function directly as a meta-tx",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferFromWithProvenanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/transferFromWithProvenance/typedData": {
+      "post": {
+        "operationId": "SRRController_collectionTransferFromTypedData",
+        "summary": "Build typed data for a transfer from with provenance on collection request",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/lockExternalTransfer": {
+      "put": {
+        "operationId": "SRRController_collectionSetLockExternalTransfer",
+        "summary": "Collection: Disable/Enable standard ERC721 transfer methods",
+        "description": "Collection: Disable/Enable standard ERC721 transfer methods",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetLockExternalTranferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/srr/{contractAddress}/{tokenId}/lockExternalTransfer/typedData": {
+      "put": {
+        "operationId": "SRRController_collectionSetLockExternalTransferTypedData",
+        "summary": "Collection: Build typed data for disable/enable standard ERC721 transfer methods",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "Startrail Registry Record Token ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/history/typedData": {
+      "post": {
+        "operationId": "SRRController_collectionAddHistoryTypedData",
+        "summary": "Build typed data for for associating custom histories with Collection SRRs",
+        "description": "Build typed data for for associating Collection SRRs with existing custom histories",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/srr/{contractAddress}/history": {
+      "post": {
+        "operationId": "SRRController_collectionAddHistory",
+        "summary": "Associate Collection SRRs with existing custom histories",
+        "description": "Associate Collection SRRs with existing custom histories",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "403": {
+            "description": "Valid bearer token required"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/licensedUser": {
+      "post": {
+        "operationId": "LicensedUserController_createLicensedUserWallet",
+        "summary": "Create a LicensedUserWallet contract",
+        "description": "Creates a new LicensedUserWallet contract on Startrail.<br/><br/>NOTE: You MUST provide the Admin token to be authorized.<br/><br/>CLICK THE LOCK ICON ON THE RIGHT TO SET THE AUTH TOKEN",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLicensedUserWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "LicensedUserController_getLicensedUserWallets",
+        "summary": "Get LicensedUserWallets",
+        "description": "Get LicensedUserWallets by wallet address or by an ownerEOA",
+        "parameters": [
+          {
+            "name": "ownerEOA",
+            "required": false,
+            "in": "query",
+            "description": "Query by owner of LicensedUserWallet",
+            "example": "0x87Ef5da2c87e047E7F005Efb8b68a93Dc94D161c",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "walletAddress",
+            "required": false,
+            "in": "query",
+            "description": "Query by LicensedUserWallet contract address",
+            "example": "0x87Ef5da2c87e047E7F005Efb8b68a93Dc94D161c",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit the result set length to this number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderAsc",
+            "required": false,
+            "in": "query",
+            "description": "Order by Ascending (true) or Descending (false)",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LicensedUserWallet"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/licensedUser/setEnglishName": {
+      "put": {
+        "operationId": "LicensedUserController_setEnglishName",
+        "summary": "Update english name from a LicensedUserWallet contract",
+        "description": "Allows admin to update a LU english name.<br/><br/>NOTE: You MUST provide the Admin token to be authorized.<br/><br/>CLICK THE LOCK ICON ON THE RIGHT TO SET THE AUTH TOKEN",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicensedUserWalletSetEnglishNameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/licensedUser/setOriginalName": {
+      "put": {
+        "operationId": "LicensedUserController_setOriginalName",
+        "summary": "Update original name from a LicensedUserWallet contract",
+        "description": "Allows admin to update a LU original name.<br/><br/>NOTE: You MUST provide the Admin token to be authorized.<br/><br/>CLICK THE LOCK ICON ON THE RIGHT TO SET THE AUTH TOKEN",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicensedUserWalletSetOriginalNameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/licensedUser/owner": {
+      "put": {
+        "operationId": "LicensedUserController_addOwners",
+        "summary": "Add owners to a LicensedUserWallet contract",
+        "description": "Allows admin to add new owners to the Wallet.<br/><br/>NOTE: You MUST provide the Admin token to be authorized.<br/><br/>CLICK THE LOCK ICON ON THE RIGHT TO SET THE AUTH TOKEN",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicensedUserWalletAddOwnerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TxResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "LicensedUserController_removeOwners",
+        "summary": "Remove owners from a LicensedUserWallet contract",
+        "description": "Allows admin to remove owners from the Wallet.<br/><br/>NOTE: You MUST provide the Admin token to be authorized.<br/><br/>CLICK THE LOCK ICON ON THE RIGHT TO SET THE AUTH TOKEN",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicensedUserWalletRemoveOwnerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TxResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/licensedUser/{luwContractAddress}/collections": {
+      "get": {
+        "operationId": "LicensedUserController_getCollectionsByLUWContractAddress",
+        "summary": "Get a list of Collection Contracts owned by the input LUW contract address",
+        "description": "Get a list of Collection Contracts owned by the input Licensed User Wallet contract address.",
+        "parameters": [
+          {
+            "name": "luwContractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetCollectionResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "luwContractAddress is not an Ethereum Address"
+          },
+          "404": {
+            "description": "Given luwContractAddress does not exist."
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "operationId": "HealthController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/info": {
+      "get": {
+        "operationId": "AppInfoController_getVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/info/gas": {
+      "get": {
+        "operationId": "AppInfoController_getGasInfo",
+        "summary": "",
+        "description": "Administrator can get the current ITX gas tank",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GasInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the authorization method or credentials are wrong"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tx": {
+      "get": {
+        "operationId": "TxController_getTx",
+        "summary": "",
+        "description": "Get details of transaction including it's status",
+        "parameters": [
+          {
+            "name": "txHash",
+            "required": false,
+            "in": "query",
+            "description": "Query by transaction hash",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "txReceiptId",
+            "required": false,
+            "in": "query",
+            "example": "123",
+            "description": "The params are exclusive.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "txStatus",
+            "required": false,
+            "in": "query",
+            "description": "Query by transaction status",
+            "schema": {
+              "enum": [
+                "pending",
+                "success",
+                "failure",
+                "mined"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "signingEOA",
+            "required": false,
+            "in": "query",
+            "description": "Query by signer of meta-tx signature",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "licensedUser",
+            "required": false,
+            "in": "query",
+            "description": "Query by LicensedUserWallet the transaction was proxied through",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TxReceiptResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "301": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/tx/config": {
+      "post": {
+        "operationId": "TxController_setConfig",
+        "summary": "",
+        "description": "Administrator can update the TxConfig values. A subset of TxConfig can be provided or ALL TxConfig properties can be provided.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TxConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "TxController_getConfig",
+        "summary": "",
+        "description": "Administrator can get the current TxConfig values.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxConfig"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "if the authorization method or credentials are wrong"
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tx/{txReceiptId}/overrideGasPrice": {
+      "post": {
+        "operationId": "TxController_setOverrideGasPrice",
+        "summary": "",
+        "description": "Administrator update the overrideGasPriceGwei for a TxReceipt. If the tx is resubmitted due to timeout, this gas price will be used.",
+        "parameters": [
+          {
+            "name": "txReceiptId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TxOverridePriceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tx/{txReceiptId}/resend": {
+      "post": {
+        "operationId": "TxController_resend",
+        "summary": "",
+        "description": "Administrator resend tx with broadcast failed status.",
+        "parameters": [
+          {
+            "name": "txReceiptId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/metadata/{metadataHash}": {
+      "get": {
+        "operationId": "MetadataController_getMetadataJSONByHash",
+        "summary": "Get metadata JSON by digest or cid",
+        "description": "Get metadata JSON by a given digest.",
+        "parameters": [
+          {
+            "name": "metadataHash",
+            "required": true,
+            "in": "path",
+            "description": "Digest or CID v1 of Metadata",
+            "examples": {
+              "digest": {
+                "value": "0x7692c3ad3540bb803c020b3aee66cd8887123234ea0c6e7143c0add73ff431ed.json"
+              },
+              "cid": {
+                "value": "bafkreihzxmydu3tfsiig6lxvzivrvbm5tgbzs4rq2ngekxxsstto24atia.json"
+              }
+            },
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/schema/*": {
+      "get": {
+        "operationId": "SchemaController_getJSONSchema",
+        "summary": "Get the JSON schema",
+        "description": "Get the JSON schema.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/certAttachmentFile/signedUrlsV2": {
+      "post": {
+        "operationId": "CertAttachmentFileController_generatetFileSignedUrlsV2",
+        "summary": "",
+        "description": "Generate signed urls to upload or download files.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateSignedUrlsV2Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/certAttachmentFile/fileMetadataV2": {
+      "post": {
+        "operationId": "CertAttachmentFileController_getFileMetadataV2",
+        "summary": "",
+        "description": "Retrieve file metadata of given filepaths from storage bucket.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFileMetadataV2Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "No such object if the file does not exist in storage bucket."
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ]
+      }
+    },
+    "/api/v1/certAttachmentFile/signedUrls/{certId}": {
+      "post": {
+        "operationId": "CertAttachmentFileController_generateCertAttachmentFileSignedUrls",
+        "summary": "",
+        "description": "DEPRECATED. Generate signed urls to upload/download Cert Attachment Files.",
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "certId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateCertAttachmentFileSignedUrlsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "tags": [
+          "Deprecated"
+        ]
+      }
+    },
+    "/api/v1/certAttachmentFile/signedUrls": {
+      "post": {
+        "operationId": "CertAttachmentFileController_generatetFileSignedUrlsByPath",
+        "summary": "",
+        "description": "DEPRECATED. Generate signed urls to download files.",
+        "deprecated": true,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateSignedUrlsByPathsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "tags": [
+          "Deprecated"
+        ]
+      }
+    },
+    "/api/v1/certAttachmentFile/fileMetadata": {
+      "post": {
+        "operationId": "CertAttachmentFileController_getFileMetadata",
+        "summary": "",
+        "description": "DEPRECATED. Retrieve file metadata of given filepaths from storage bucket.",
+        "deprecated": true,
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetFileMetadataRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "No such object if the file does not exist in storage bucket."
+          }
+        },
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "tags": [
+          "Deprecated"
+        ]
+      }
+    },
+    "/api/v1/collection/{contractAddress}": {
+      "get": {
+        "operationId": "CollectionController_getCollection",
+        "summary": "Get a Contract Collection By ContractAddress",
+        "description": "Get a Collection By contract Address.",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCollectionResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/collection": {
+      "post": {
+        "operationId": "CollectionController_createCollection",
+        "summary": "Create a new Collection contract",
+        "description": "Create a new Collection contract",
+        "parameters": [
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collection/typedData": {
+      "post": {
+        "operationId": "CollectionController_createCollectionTypedData",
+        "summary": "Build typed data for a Collection creation request",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/collection/{contractAddress}/transferOwnership": {
+      "put": {
+        "operationId": "CollectionController_transferOwnership",
+        "summary": "Transfer Collection ownership to another address",
+        "description": "Transfer Collection ownership to another address",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxSignature",
+            "in": "header",
+            "description": "Signature of a typed data for a meta transaction. <br/><br/>This is a flattened Ethereum signature.<br/><br/>See ethers.utils.joinSignature  for method of flattening and for the format of the initial signature.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelId",
+            "in": "header",
+            "description": "Channel of meta transaction(optional - default 0)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailMetaTxChannelNonce",
+            "in": "header",
+            "description": "Nonce within channel of meta transaction",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StartrailLUWAddress",
+            "in": "header",
+            "description": "Address of a LicensedUserWallet to proxy the transaction through.<br/><br/> If it is not given, signer's EOA is regarded as from address.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionTransferOwnershipDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TxResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collection/{contractAddress}/transferOwnership/typedData": {
+      "put": {
+        "operationId": "CollectionController_transferOwnershipTypedData",
+        "summary": "Build typed data for a Collection transferOwnership request",
+        "parameters": [
+          {
+            "name": "contractAddress",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTypedDataLuDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/exception-test": {
+      "get": {
+        "operationId": "ExceptionTestController_getException",
+        "summary": "Get an intentional exception",
+        "description": "Get an intentional exception by httpCode and errorMessage to test alerts",
+        "parameters": [
+          {
+            "name": "httpCode",
+            "required": true,
+            "in": "query",
+            "description": "expected http code (https://github.com/nestjs/nest/blob/v8.3.1/packages/common/enums/http-status.enum.ts)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "errorMessage",
+            "required": true,
+            "in": "query",
+            "description": "expected error message",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "Startrail-API",
+    "description": "Startrail-API Endpoint List",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "authorization": {
+        "scheme": "bearer",
+        "bearerFormat": "uuid",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateCustomHistoryDto": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "description": "Custom History Metadata conforming to one of the custom-history-* JSON schemas. See startrail-common-js metadata-schemas/.",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/custom-history-of-auction-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-c1d4f7ca7d01cfb4d62abee923e335f33be40112b5349fda6bfc7224c731ac8d",
+              "historyType": "auction",
+              "hostLUW": "0x8DFea3525EE810A7FEa886Fee69c57e68B5d5052",
+              "period": {
+                "from": "2020-01-23",
+                "to": "2020-03-21"
+              },
+              "saleName": {
+                "en": "ABC Auction",
+                "ja": "オークション ABC"
+              },
+              "venue": {
+                "en": "Online",
+                "ja": "オンライン",
+                "zh": "一个标题"
+              },
+              "hostCountry": "JP",
+              "city": "Tokyo"
+            }
+          },
+          "additionalOffChainMetadata": {
+            "type": "object",
+            "description": "Additional Data that is not directly part of the custom history entry, optional. if used will link Certs to the history and notify other subsystems about the provided data",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/custom-history-off-chain-metadata.v1.0.schema.json",
+              "$schemaIntegrity": "sha256-d7950637194c94d2ca91c64d385bfedac6a270a0f31040540382d942f514ed29",
+              "historyType": "off_chain",
+              "linkedSRRs": [
+                {
+                  "srrId": "123456789012"
+                }
+              ],
+              "attachmentFiles": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "title": "name_of_the_file.pdf",
+                  "url": "https://some.storage.com/file.path"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "metadata",
+          "additionalOffChainMetadata"
+        ]
+      },
+      "TxResponseDto": {
+        "type": "object",
+        "properties": {
+          "txReceiptId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "txReceiptId"
+        ]
+      },
+      "UpdateCustomHistoryDto": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "description": "Custom History Metadata conforming to one of the custom-history-* JSON schemas. See startrail-common-js metadata-schemas/.",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/custom-history-of-auction-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-c1d4f7ca7d01cfb4d62abee923e335f33be40112b5349fda6bfc7224c731ac8d",
+              "historyType": "auction",
+              "hostLUW": "0x8DFea3525EE810A7FEa886Fee69c57e68B5d5052",
+              "period": {
+                "from": "2020-01-23",
+                "to": "2020-03-21"
+              },
+              "saleName": {
+                "en": "ABC Auction",
+                "ja": "オークション ABC"
+              },
+              "venue": {
+                "en": "Online",
+                "ja": "オンライン",
+                "zh": "一个标题"
+              },
+              "hostCountry": "JP",
+              "city": "Tokyo"
+            }
+          }
+        },
+        "required": [
+          "metadata"
+        ]
+      },
+      "AddCustomHistoryTypeDto": {
+        "type": "object",
+        "properties": {
+          "historyTypeName": {
+            "type": "string",
+            "description": "Name of Custom History Type in lower case",
+            "example": "auction"
+          }
+        },
+        "required": [
+          "historyTypeName"
+        ]
+      },
+      "SRR": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateSRRDto": {
+        "type": "object",
+        "properties": {
+          "isPrimaryIssuer": {
+            "type": "boolean",
+            "description": "Issued by Primary Issuer flag",
+            "example": false
+          },
+          "artistAddress": {
+            "type": "string",
+            "description": "Artist Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "SRR Metadata conforming to the JSON schema registry-record-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-metadata.v2.0.schema.json",
+              "$schemaIntegrity": "sha256-f63238ce3b8c4f8a99fb453d716d5451f75508c2e403a58af0412014187e7a61",
+              "startbahnCertICTagUIDs": [
+                "1234567890abcdef"
+              ],
+              "title": {
+                "en": "A title",
+                "ja": "タイトル",
+                "zh": "一个标题"
+              },
+              "size": {
+                "width": 200,
+                "height": 400,
+                "depth": 12.4,
+                "unit": "pixel",
+                "flexibleDescription": {
+                  "en": "flexibleDescription comes here",
+                  "ja": "自由だーーー"
+                }
+              },
+              "medium": {
+                "en": "Oil on canvas",
+                "ja": "キャンバスに油彩",
+                "zh": "布面油画"
+              },
+              "edition": {
+                "uniqueness": "unique work",
+                "proofType": "ED",
+                "number": 1,
+                "totalNumber": 3,
+                "note": {
+                  "en": "some extra notes in 1 or more languages"
+                }
+              },
+              "contractTerms": {
+                "royaltyRate": 15.7,
+                "fileURL": "https://startrail.io/whitepaper/startrail_wp_en_v1.1.pdf"
+              },
+              "note": {
+                "en": "note",
+                "zh": "注意"
+              },
+              "thumbnailURL": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "yearOfCreation": {
+                "en": "around 2010-2020",
+                "ja": "2010年から2020年頃"
+              },
+              "isDigital": true,
+              "digitalDataHash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+              "digitalComponents": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "attachmentFiles": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "name": "some nft name",
+              "description": "some nft description",
+              "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "external_url": "https://openseacreatures.io/3"
+            }
+          },
+          "lockExternalTransfer": {
+            "type": "boolean",
+            "description": "SRR flag to disable standard ERC721 transfer methods",
+            "example": false
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          }
+        },
+        "required": [
+          "isPrimaryIssuer",
+          "artistAddress",
+          "metadata",
+          "lockExternalTransfer",
+          "to"
+        ]
+      },
+      "GetTypedDataLuDto": {
+        "type": "object",
+        "properties": {
+          "requestData": {
+            "type": "object",
+            "description": "Request data for the meta transaction"
+          },
+          "channelId": {
+            "type": "object",
+            "description": "Nonce Channel to use (optional - defaults to 0)",
+            "example": "0"
+          },
+          "channelNonce": {
+            "type": "object",
+            "description": "Nonce within the Channel (optional - will query blockchain for the next nonce)",
+            "example": "0"
+          },
+          "fromAddress": {
+            "type": "string",
+            "description": "Address of licensed user wallet",
+            "example": "0x4412Ba95BEC0CDB4562D97CB9149575Ea5B514A5"
+          }
+        },
+        "required": [
+          "requestData",
+          "channelId",
+          "channelNonce",
+          "fromAddress"
+        ]
+      },
+      "UpdateSRRDto": {
+        "type": "object",
+        "properties": {
+          "isPrimaryIssuer": {
+            "type": "boolean",
+            "description": "Issued by Primary Issuer flag",
+            "example": false
+          },
+          "artistAddress": {
+            "type": "string",
+            "description": "Artist Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          }
+        },
+        "required": [
+          "isPrimaryIssuer",
+          "artistAddress"
+        ]
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
+      "ConvertMetadataDto": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "description": "SRR Metadata conforming to the JSON schema registry-record-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-fff288406b907ee6472585388bf519573628e45592be368f128b5b1e37a947c9",
+              "startbahnCertICTagUIDs": [
+                "1234567890abcdef"
+              ],
+              "title": {
+                "en": "A title",
+                "ja": "タイトル",
+                "zh": "一个标题"
+              },
+              "size": {
+                "width": 200,
+                "height": 400,
+                "depth": 12.4,
+                "unit": "pixel",
+                "flexibleDescription": {
+                  "en": "flexibleDescription comes here",
+                  "ja": "自由だーーー"
+                }
+              },
+              "medium": {
+                "en": "Oil on canvas",
+                "ja": "キャンバスに油彩",
+                "zh": "布面油画"
+              },
+              "edition": {
+                "uniqueness": "unique work",
+                "proofType": "ED",
+                "number": 1,
+                "totalNumber": 3,
+                "note": {
+                  "en": "some extra notes in 1 or more languages"
+                }
+              },
+              "contractTerms": {
+                "royaltyRate": 15.7,
+                "fileURL": "https://startrail.io/whitepaper/startrail_wp_en_v1.1.pdf"
+              },
+              "note": {
+                "en": "note",
+                "zh": "注意"
+              },
+              "thumbnailURL": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "yearOfCreation": {
+                "en": "around 2010-2020",
+                "ja": "2010年から2020年頃"
+              },
+              "isDigital": true,
+              "digitalDataHash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5"
+            }
+          },
+          "artistName": {
+            "type": "string",
+            "description": "artistName for metadata description"
+          },
+          "externalUrl": {
+            "type": "string",
+            "description": "externalUrl",
+            "example": "https://sample.com"
+          },
+          "issuerName": {
+            "type": "string",
+            "description": "issuerName for metadata description"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "tokenId by which SRR data is to be fetched to create metadata description"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "collection address of the SRR"
+          }
+        },
+        "required": [
+          "metadata",
+          "artistName",
+          "externalUrl",
+          "issuerName",
+          "tokenId",
+          "contractAddress"
+        ]
+      },
+      "ConvertBatchMetadataRequestDto": {
+        "type": "object",
+        "properties": {
+          "metadataBatch": {
+            "description": "SRR Metadata conforming to the JSON schema registry-record-metadata.schema.json",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConvertMetadataDto"
+            }
+          }
+        },
+        "required": [
+          "metadataBatch"
+        ]
+      },
+      "ConvertMetadataResponse": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "type": "object",
+            "description": "SRR Metadata conforming to the JSON schema registry-record-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-fff288406b907ee6472585388bf519573628e45592be368f128b5b1e37a947c9",
+              "startbahnCertICTagUIDs": [
+                "1234567890abcdef"
+              ],
+              "title": {
+                "en": "A title",
+                "ja": "タイトル",
+                "zh": "一个标题"
+              },
+              "size": {
+                "width": 200,
+                "height": 400,
+                "depth": 12.4,
+                "unit": "pixel",
+                "flexibleDescription": {
+                  "en": "flexibleDescription comes here",
+                  "ja": "自由だーーー"
+                }
+              },
+              "medium": {
+                "en": "Oil on canvas",
+                "ja": "キャンバスに油彩",
+                "zh": "布面油画"
+              },
+              "edition": {
+                "uniqueness": "unique work",
+                "proofType": "ED",
+                "number": 1,
+                "totalNumber": 3,
+                "note": {
+                  "en": "some extra notes in 1 or more languages"
+                }
+              },
+              "contractTerms": {
+                "royaltyRate": 15.7,
+                "fileURL": "https://startrail.io/whitepaper/startrail_wp_en_v1.1.pdf"
+              },
+              "note": {
+                "en": "note",
+                "zh": "注意"
+              },
+              "thumbnailURL": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "yearOfCreation": {
+                "en": "around 2010-2020",
+                "ja": "2010年から2020年頃"
+              },
+              "isDigital": true,
+              "digitalDataHash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5"
+            }
+          },
+          "isConverted": {
+            "type": "boolean",
+            "description": "true if metadata is converted"
+          },
+          "message": {
+            "type": "object",
+            "description": "error message if it is emitted"
+          }
+        },
+        "required": [
+          "metadata",
+          "isConverted",
+          "message"
+        ]
+      },
+      "ApproveSRRByCommitmentDto": {
+        "type": "object",
+        "properties": {
+          "preimage": {
+            "type": "string",
+            "description": "email to be used in the commit/reveal scheme.",
+            "example": "art@tuta.io"
+          },
+          "revealHash": {
+            "type": "string",
+            "description": "single keccak256 hash of email to be used in the commit/reveal scheme.",
+            "example": "0x0e675a836831dd887e5ad4ce4e8365b979dcd2141536d69e3767c7c620bbfc1f"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "SRR Transfer Metadata conforming to the JSON schema registry-record-transfer-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-transfer-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-951deba4bdaf93442f00c2a993a246e8c181a2baa73a925d99a0dfe61e712c83",
+              "transferType": "Primary sale",
+              "remarks": {
+                "en": "Reason for the transfer, English",
+                "ja": "移転の理由：日本語"
+              }
+            }
+          }
+        },
+        "required": [
+          "preimage",
+          "revealHash",
+          "metadata"
+        ]
+      },
+      "GetTypedDataDto": {
+        "type": "object",
+        "properties": {
+          "requestData": {
+            "type": "object",
+            "description": "Request data for the meta transaction"
+          },
+          "channelId": {
+            "type": "object",
+            "description": "Nonce Channel to use (optional - defaults to 0)",
+            "example": "0"
+          },
+          "channelNonce": {
+            "type": "object",
+            "description": "Nonce within the Channel (optional - will query blockchain for the next nonce)",
+            "example": "0"
+          },
+          "fromAddress": {
+            "type": "string",
+            "description": "Address of licensed user wallet. If no datafield is set, it is regarded as tx from EOA",
+            "example": "0x4412Ba95BEC0CDB4562D97CB9149575Ea5B514A5"
+          }
+        },
+        "required": [
+          "requestData",
+          "channelId",
+          "channelNonce",
+          "fromAddress"
+        ]
+      },
+      "TransferSRRByRevealDto": {
+        "type": "object",
+        "properties": {
+          "revealHash": {
+            "type": "string",
+            "description": "Reveal hash the hash of which matches the commitment in the approveByCommitment",
+            "example": "0x335929a4e59b0860ec04c620c1284dace74c00f7eadaadce7a18d6deba6c544e"
+          },
+          "to": {
+            "type": "string",
+            "description": "Address to transfer for ownership to.",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          },
+          "isIntermediary": {
+            "type": "boolean",
+            "description": "Intermediary flag used by startbahn to trigger a transaction. - defaults to false",
+            "example": false
+          }
+        },
+        "required": [
+          "revealHash",
+          "to",
+          "isIntermediary"
+        ]
+      },
+      "TransferFromWithProvenanceDto": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Address to transfer for ownership to.",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "SRR Transfer Metadata conforming to the JSON schema registry-record-transfer-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-transfer-metadata.v1.1.schema.json",
+              "$schemaIntegrity": "sha256-951deba4bdaf93442f00c2a993a246e8c181a2baa73a925d99a0dfe61e712c83",
+              "transferType": "Primary sale",
+              "remarks": {
+                "en": "Reason for the transfer, English",
+                "ja": "移転の理由：日本語"
+              }
+            }
+          },
+          "isIntermediary": {
+            "type": "boolean",
+            "description": "Intermediary flag used by startbahn to trigger a transaction. - defaults to false",
+            "example": false
+          }
+        },
+        "required": [
+          "to",
+          "metadata",
+          "isIntermediary"
+        ]
+      },
+      "GeneralizedBulkDto": {
+        "type": "object",
+        "properties": {
+          "functionType": {
+            "type": "string",
+            "description": "function type (createSRR, approveSRRByCommitment, transferFromWithProvenance)",
+            "example": "approveSRRByCommitment"
+          },
+          "data": {
+            "type": "object",
+            "description": "Input values according to functionType",
+            "example": "approveSRRByCommitment"
+          }
+        },
+        "required": [
+          "functionType",
+          "data"
+        ]
+      },
+      "CreateGeneralizedBatchRequest": {
+        "type": "object",
+        "properties": {
+          "txs": {
+            "description": "A JSON array of details of each transactions.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GeneralizedBulkDto"
+            }
+          }
+        },
+        "required": [
+          "txs"
+        ]
+      },
+      "CreateBatchTransferResponse": {
+        "type": "object",
+        "properties": {
+          "txReceiptId": {
+            "type": "number"
+          },
+          "batchId": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "txReceiptId",
+          "batchId"
+        ]
+      },
+      "AddHistoryDto": {
+        "type": "object",
+        "properties": {
+          "tokenIds": {
+            "description": "Tokens to associate histories with",
+            "example": [
+              1111111,
+              2222222
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "customHistoryIds": {
+            "description": "History to associate tokens with",
+            "example": [
+              10
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "tokenIds",
+          "customHistoryIds"
+        ]
+      },
+      "SetLockExternalTranferDto": {
+        "type": "object",
+        "properties": {
+          "flag": {
+            "type": "boolean",
+            "description": "the flag to disable standard ERC721 transfer methods",
+            "example": false
+          }
+        },
+        "required": [
+          "flag"
+        ]
+      },
+      "CheckERC2981RoyaltyDto": {
+        "type": "object",
+        "properties": {
+          "contractAddress": {
+            "type": "string",
+            "description": "Collection contract address. If this one is set, it will be utilized for the collection, otherwise, it will be applied for Startrail Registry.",
+            "example": "0x5979B6061f1caC61F70A06Cd968a6f67fe0B8284"
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "SRR Token ID (for already issued SRR). If this one is set, issuerAddress anb metadata will be ignored",
+            "example": "436104791396"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "SRR Metadata (for draft SRR to check if metadata will apply ERC2981). This one is required if tokenId is not set",
+            "example": {
+              "$schema": "ipfs://bafkreibebzcktpolubbklh73mxkxswkf3nagmvgq3tsnp33xsi6bbye5ay",
+              "startbahnCertICTagUIDs": [
+                "1234567890abcdef"
+              ],
+              "chipUIDs": [
+                "1234567890abcdef"
+              ],
+              "title": {
+                "en": "A title",
+                "ja": "タイトル",
+                "zh": "一个标题"
+              },
+              "size": {
+                "width": 200,
+                "height": 400,
+                "depth": 12.4,
+                "unit": "pixel",
+                "flexibleDescription": {
+                  "en": "flexibleDescription comes here",
+                  "ja": "自由だーーー"
+                }
+              },
+              "attributes": [
+                {
+                  "trait_type": "Mouth",
+                  "value": "Surprised"
+                }
+              ],
+              "medium": {
+                "en": "Oil on canvas",
+                "ja": "キャンバスに油彩",
+                "zh": "布面油画"
+              },
+              "edition": {
+                "uniqueness": "unique work",
+                "proofType": "ED",
+                "number": 1,
+                "totalNumber": 3,
+                "note": {
+                  "en": "some extra notes in 1 or more languages"
+                }
+              },
+              "contractTerms": {
+                "royaltyRate": 15.7,
+                "fileURL": "https://startrail.io/whitepaper/startrail_wp_en_v1.1.pdf"
+              },
+              "note": {
+                "en": "note",
+                "zh": "注意"
+              },
+              "thumbnailURL": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "yearOfCreation": {
+                "en": "around 2010-2020",
+                "ja": "2010年から2020年頃"
+              },
+              "isDigital": true,
+              "digitalDataHash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+              "digitalComponents": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "attachmentFiles": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "name": "some nft name",
+              "description": "some nft description",
+              "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "external_url": "https://openseacreatures.io/3"
+            }
+          },
+          "issuerAddress": {
+            "type": "string",
+            "description": "Issuer Ethereum Address (for draft SRR). This one is required if tokenId is not set",
+            "example": "0x2c1edA2d80E82a9B2B26b64DA21e341636e8Bab4"
+          }
+        }
+      },
+      "CheckERC2981RoyaltyResponse": {
+        "type": "object",
+        "properties": {
+          "royaltyReceiver": {
+            "type": "string | null",
+            "description": "SRR Royalty receiver, null if its ERC2981 is not activated or ineligible",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          },
+          "royaltyBasisPoints": {
+            "type": "number | null",
+            "description": "SRR royalty basis points, null if its ERC2981 is not activated or ineligible",
+            "example": "1570"
+          }
+        },
+        "required": [
+          "royaltyReceiver",
+          "royaltyBasisPoints"
+        ]
+      },
+      "CreateCollectionSRRDto": {
+        "type": "object",
+        "properties": {
+          "isPrimaryIssuer": {
+            "type": "boolean",
+            "description": "Issued by Primary Issuer flag",
+            "example": false
+          },
+          "artistAddress": {
+            "type": "string",
+            "description": "Artist Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "SRR Metadata conforming to the JSON schema registry-record-metadata.schema.json",
+            "example": {
+              "$schema": "https://api.startrail.io/api/v1/schema/registry-record-metadata.v2.0.schema.json",
+              "$schemaIntegrity": "sha256-f63238ce3b8c4f8a99fb453d716d5451f75508c2e403a58af0412014187e7a61",
+              "startbahnCertICTagUIDs": [
+                "1234567890abcdef"
+              ],
+              "title": {
+                "en": "A title",
+                "ja": "タイトル",
+                "zh": "一个标题"
+              },
+              "size": {
+                "width": 200,
+                "height": 400,
+                "depth": 12.4,
+                "unit": "pixel",
+                "flexibleDescription": {
+                  "en": "flexibleDescription comes here",
+                  "ja": "自由だーーー"
+                }
+              },
+              "medium": {
+                "en": "Oil on canvas",
+                "ja": "キャンバスに油彩",
+                "zh": "布面油画"
+              },
+              "edition": {
+                "uniqueness": "unique work",
+                "proofType": "ED",
+                "number": 1,
+                "totalNumber": 3,
+                "note": {
+                  "en": "some extra notes in 1 or more languages"
+                }
+              },
+              "contractTerms": {
+                "royaltyRate": 15.7,
+                "fileURL": "https://startrail.io/whitepaper/startrail_wp_en_v1.1.pdf"
+              },
+              "note": {
+                "en": "note",
+                "zh": "注意"
+              },
+              "thumbnailURL": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "yearOfCreation": {
+                "en": "around 2010-2020",
+                "ja": "2010年から2020年頃"
+              },
+              "isDigital": true,
+              "digitalDataHash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+              "digitalComponents": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "attachmentFiles": [
+                {
+                  "hash": "sha256-247e4b904322a1dd0b148cd77e8627ec7d391251380880ab4621726ecb945ef5",
+                  "category": "artwork"
+                }
+              ],
+              "name": "some nft name",
+              "description": "some nft description",
+              "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+              "external_url": "https://openseacreatures.io/3"
+            }
+          },
+          "lockExternalTransfer": {
+            "type": "boolean",
+            "description": "SRR flag to disable standard ERC721 transfer methods",
+            "example": false
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          }
+        },
+        "required": [
+          "isPrimaryIssuer",
+          "artistAddress",
+          "metadata",
+          "lockExternalTransfer",
+          "to"
+        ]
+      },
+      "UpdateCollectionSRRDto": {
+        "type": "object",
+        "properties": {
+          "isPrimaryIssuer": {
+            "type": "boolean",
+            "description": "Issued by Primary Issuer flag",
+            "example": false
+          },
+          "artistAddress": {
+            "type": "string",
+            "description": "Artist Ethereum Address",
+            "example": "0xA6E6a9E20a541680a1D6E1412f5088AefBF58a22"
+          }
+        },
+        "required": [
+          "isPrimaryIssuer",
+          "artistAddress"
+        ]
+      },
+      "CreateLicensedUserWalletDto": {
+        "type": "object",
+        "properties": {
+          "owners": {
+            "description": "List of owners Ethereum addresses",
+            "example": [
+              "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "threshold": {
+            "type": "number",
+            "description": "Number of signatures required to approve a transaction",
+            "example": 1
+          },
+          "englishName": {
+            "type": "string",
+            "description": "Official name in English",
+            "example": "Artist A"
+          },
+          "originalName": {
+            "type": "string",
+            "description": "Official name in original language",
+            "example": "アーティストA"
+          },
+          "userType": {
+            "type": "string",
+            "description": "User type",
+            "enum": [
+              "handler",
+              "artist"
+            ],
+            "default": "artist"
+          },
+          "salt": {
+            "type": "string",
+            "description": "Create2 salt - a random salt is generated if none is given here"
+          }
+        },
+        "required": [
+          "owners",
+          "threshold",
+          "englishName",
+          "originalName",
+          "userType"
+        ]
+      },
+      "LicensedUserWalletSetEnglishNameDto": {
+        "type": "object",
+        "properties": {
+          "luwAddress": {
+            "type": "string",
+            "description": "LUW Ethereum address",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          },
+          "englishName": {
+            "type": "string",
+            "description": "Official name in English",
+            "example": "Artist A"
+          }
+        },
+        "required": [
+          "luwAddress",
+          "englishName"
+        ]
+      },
+      "LicensedUserWalletSetOriginalNameDto": {
+        "type": "object",
+        "properties": {
+          "luwAddress": {
+            "type": "string",
+            "description": "LUW Ethereum address",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          },
+          "originalName": {
+            "type": "string",
+            "description": "Official name in original language",
+            "example": "アーティストA"
+          }
+        },
+        "required": [
+          "luwAddress",
+          "originalName"
+        ]
+      },
+      "LicensedUserWalletAddOwnerDto": {
+        "type": "object",
+        "properties": {
+          "owners": {
+            "description": "List of owners Ethereum addresses to add",
+            "example": [
+              "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "luwAddress": {
+            "type": "string",
+            "description": "LUW Ethereum address",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          }
+        },
+        "required": [
+          "owners",
+          "luwAddress"
+        ]
+      },
+      "LicensedUserWalletRemoveOwnerDto": {
+        "type": "object",
+        "properties": {
+          "owners": {
+            "description": "List of owners Ethereum addresses to remove",
+            "example": [
+              "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "luwAddress": {
+            "type": "string",
+            "description": "LUW Ethereum address",
+            "example": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+          }
+        },
+        "required": [
+          "owners",
+          "luwAddress"
+        ]
+      },
+      "LicensedUserWallet": {
+        "type": "object",
+        "properties": {}
+      },
+      "GetCollectionResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the collection. Will be the same as in metadata.name, but also stored on the contract",
+            "example": "Super Cool Tokens"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Symbol to identify the token ",
+            "example": "SCT"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Contract address of the collection contract. Will be visible on opensea.",
+            "example": "0x87Ef5da2c87e047E7F005Efb8b68a93Dc94D161c"
+          },
+          "ownerAddress": {
+            "type": "string",
+            "description": "Address of the owner of the collection.",
+            "example": "0x40b29c5fe4427f0C09Dd595B983a21322fe6A101"
+          },
+          "metadataCID": {
+            "type": "string",
+            "description": "Collection Contract Metadata CID (TO BE REMOVED)"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Collection created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Collection updated at"
+          }
+        },
+        "required": [
+          "name",
+          "symbol",
+          "contractAddress",
+          "ownerAddress",
+          "metadataCID",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "GasInfo": {
+        "type": "object",
+        "properties": {}
+      },
+      "TxReceiptResponseDto": {
+        "type": "object",
+        "properties": {
+          "txReceiptId": {
+            "type": "number"
+          },
+          "hash": {
+            "type": "object"
+          },
+          "signingEOA": {
+            "type": "object"
+          },
+          "txStatus": {
+            "type": "string"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Transaction confirmed - a number of blocks have been mined since this one was mined"
+          },
+          "errorReason": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "txReceiptId",
+          "hash",
+          "signingEOA",
+          "txStatus",
+          "confirmed",
+          "errorReason",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "TxConfigDto": {
+        "type": "object",
+        "properties": {
+          "fixedGasPriceOn": {
+            "type": "boolean",
+            "description": "Set to true to use fixed gas prices stored in the database.Set to false to use dynamic gas prices from EthGasStation."
+          },
+          "defaultGasPriceGwei": {
+            "type": "number",
+            "description": "Gas price to submit transactions with when fixedGasPriceOn=true",
+            "example": 50
+          },
+          "defaultMaxFeePerGasPriceGwei": {
+            "type": "number",
+            "description": "Gas price to submit transactions max fee with when fixedGasPriceOn=true",
+            "example": 50
+          },
+          "defaultMaxPriorityFeePerGasPriceGwei": {
+            "type": "number",
+            "description": "Gas price to submit transactions priority fee with when fixedGasPriceOn=true",
+            "example": 50
+          },
+          "miningTimeoutSeconds": {
+            "type": "number",
+            "description": "Resubmit pending transactions after they have been in the tx pool this many seconds",
+            "example": 86400
+          },
+          "oracleEndpoint": {
+            "type": "string",
+            "description": "EthGasStation URL",
+            "example": "https://gasstation-mainnet.matic.network/v2"
+          },
+          "defaultGasLevel": {
+            "type": "string",
+            "description": "Default EthGasStation price level to use when dynamic prices is on and fixedGasPriceOn = false",
+            "example": "standard",
+            "enum": [
+              "safelow",
+              "standard",
+              "fast",
+              "fastest"
+            ]
+          },
+          "relayAdminTxByITX": {
+            "type": "boolean",
+            "description": "Feature flag enabling ITX relay to handle admin transactions"
+          },
+          "enableIpfs": {
+            "type": "boolean",
+            "description": "Feature flag enabling to upload metadata to ipfs"
+          },
+          "enableIpfsForFile": {
+            "type": "boolean",
+            "description": "Feature flag enabling to upload file for contract terms and thumbnail to ipfs"
+          },
+          "enableRoyalty": {
+            "type": "boolean",
+            "description": "Feature flag enabling to use royalty - ERC2981"
+          },
+          "asyncTxSend": {
+            "type": "boolean",
+            "description": "Feature flag enabling to send async transaction"
+          }
+        },
+        "required": [
+          "fixedGasPriceOn",
+          "defaultGasPriceGwei",
+          "defaultMaxFeePerGasPriceGwei",
+          "defaultMaxPriorityFeePerGasPriceGwei",
+          "miningTimeoutSeconds",
+          "oracleEndpoint",
+          "defaultGasLevel",
+          "relayAdminTxByITX",
+          "enableIpfs",
+          "enableIpfsForFile",
+          "enableRoyalty",
+          "asyncTxSend"
+        ]
+      },
+      "TxConfig": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Fixed id of 1 - only ever 1 row and it will always have id 1",
+            "example": "1"
+          },
+          "fixedGasPriceOn": {
+            "type": "boolean",
+            "description": "flag indicating the use of a fixed gas price",
+            "example": "true"
+          },
+          "defaultGasPriceGwei": {
+            "type": "decimal, precision 10, scale 1",
+            "description": "gas price value for the default gas price in gwei",
+            "example": "10.0"
+          },
+          "defaultMaxFeePerGasPriceGwei": {
+            "type": "decimal, precision 10, scale 1",
+            "description": "gas price value for the default maximum fee in gwei",
+            "example": "10.0"
+          },
+          "defaultMaxPriorityFeePerGasPriceGwei": {
+            "type": "decimal, precision 10, scale 1",
+            "description": "gas price value for the maximum priority fee in gwei",
+            "example": "10.0"
+          },
+          "miningTimeoutSeconds": {
+            "type": "number",
+            "description": "time to wait for confirmation before transactions are resent with a higher bid",
+            "example": "120"
+          },
+          "oracleEndpoint": {
+            "type": "url",
+            "description": "gas price value for the default gas price",
+            "example": "https://gasstation-mainnet.matic.network/v2"
+          },
+          "defaultGasLevel": {
+            "type": "enum",
+            "description": "gas price level to set transaction processing speed",
+            "example": "standard"
+          },
+          "relayAdminTxByITX": {
+            "type": "boolean",
+            "description": "flag indicating the usage of relaying admin signed transactions to a wrapping service",
+            "example": "true"
+          },
+          "enableIpfs": {
+            "type": "boolean",
+            "description": "flag indicating the usage of uploading metadata to ipfs",
+            "example": "true"
+          },
+          "enableIpfsForFile": {
+            "type": "boolean",
+            "description": "flag indicating the usage of uploading file for contract terms and thumbnail to ipfs",
+            "example": "true"
+          },
+          "enableRoyalty": {
+            "type": "boolean",
+            "description": "flag enabling to use royalty - ERC2981",
+            "example": "true"
+          },
+          "asyncTxSend": {
+            "type": "boolean",
+            "description": "flag indicating the usage of async transaction",
+            "example": "true"
+          },
+          "updatedAt": {
+            "type": "Date",
+            "description": "gas price value for the default gas price",
+            "example": "2000-12-31T15:44:17.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "fixedGasPriceOn",
+          "defaultGasPriceGwei",
+          "defaultMaxFeePerGasPriceGwei",
+          "defaultMaxPriorityFeePerGasPriceGwei",
+          "miningTimeoutSeconds",
+          "oracleEndpoint",
+          "defaultGasLevel",
+          "relayAdminTxByITX",
+          "enableIpfs",
+          "enableIpfsForFile",
+          "enableRoyalty",
+          "asyncTxSend",
+          "updatedAt"
+        ]
+      },
+      "TxOverridePriceDto": {
+        "type": "object",
+        "properties": {
+          "overrideGasPriceGwei": {
+            "type": "number",
+            "description": "Transactions that timeout will be resubmitted with this price if it's set."
+          }
+        },
+        "required": [
+          "overrideGasPriceGwei"
+        ]
+      },
+      "FileInBucket": {
+        "type": "object",
+        "properties": {
+          "filepath": {
+            "type": "string",
+            "description": "Filepath without bucket name.",
+            "example": "directory/filename.jpg"
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Boolean to determine the bucket of the file.",
+            "example": false
+          }
+        },
+        "required": [
+          "filepath",
+          "isPrivate"
+        ]
+      },
+      "GenerateSignedUrlsV2Request": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "description": "Array of file information",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInBucket"
+            }
+          },
+          "action": {
+            "type": "string",
+            "description": "Enum for signedURL purpose, \"read\" to download, \"write\" to upload.",
+            "example": "read",
+            "enum": [
+              "write",
+              "read"
+            ]
+          }
+        },
+        "required": [
+          "files",
+          "action"
+        ]
+      },
+      "GetFileMetadataV2Request": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "description": "Array of file information.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInBucket"
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      },
+      "GenerateCertAttachmentFileSignedUrlsRequest": {
+        "type": "object",
+        "properties": {
+          "filenames": {
+            "description": "Array of name of the file to be saved under given cert ID in storage",
+            "example": [
+              "filename.jpg",
+              "filename-2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "action": {
+            "type": "string",
+            "description": "Enum for signedURL purpose, \"read\" to download, \"write\" to upload",
+            "example": "read"
+          },
+          "isPrivateList": {
+            "description": "An optional array of booleans to determine the bucket for each filepath",
+            "example": [
+              false,
+              true
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "filenames",
+          "action",
+          "isPrivateList"
+        ]
+      },
+      "GenerateSignedUrlsByPathsRequest": {
+        "type": "object",
+        "properties": {
+          "filepaths": {
+            "description": "array of filepath without bucket name",
+            "example": [
+              "directory/filename.jpg",
+              "filename-2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isPrivateList": {
+            "description": "An optional array of booleans to determine the bucket for each filepath",
+            "example": [
+              false,
+              true
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "filepaths",
+          "isPrivateList"
+        ]
+      },
+      "GetFileMetadataRequest": {
+        "type": "object",
+        "properties": {
+          "filepaths": {
+            "description": "An array of filepaths without bucket name",
+            "example": [
+              "directory/filename.jpg",
+              "filename-2.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isPrivateList": {
+            "description": "An optional array of booleans to determine the bucket for each filepath",
+            "example": [
+              false,
+              true
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "filepaths",
+          "isPrivateList"
+        ]
+      },
+      "CreateCollectionDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Collection name",
+            "example": "Taihei 2022"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Collection symbol",
+            "example": "T22"
+          },
+          "salt": {
+            "type": "string",
+            "description": "Create2 salt - salt used in Collection creation",
+            "example": "0xea9369d265ddf31c12231b2aeb90662018499cb62117f30cf722bc1b76c62c46"
+          }
+        },
+        "required": [
+          "name",
+          "symbol"
+        ]
+      },
+      "CollectionTransferOwnershipDto": {
+        "type": "object",
+        "properties": {
+          "newOwner": {
+            "type": "string",
+            "description": "New address to transfer collection ownership too"
+          }
+        },
+        "required": [
+          "newOwner"
+        ]
+      }
+    }
+  }
+}

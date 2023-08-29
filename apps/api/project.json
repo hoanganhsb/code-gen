@@ -5,7 +5,7 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
+      "executor": "@nx/js:swc",
       "outputs": [
         "{options.outputPath}"
       ],
@@ -67,6 +67,12 @@
           "ci": true,
           "codeCoverage": true
         }
+      }
+    },
+    "orval": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm orval --config ./apps/api/orval.config.ts"
       }
     }
   },
